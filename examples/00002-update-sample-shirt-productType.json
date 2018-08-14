@@ -1,0 +1,9 @@
+{
+  "action": "update",
+  "type": "productType",
+  "key": "sample-shirt",
+  "actions": [{
+    "action": "changeName",
+    "name": "updatedSampleShirt"
+  }]
+}

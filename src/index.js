@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
 /**
- * ct-migrations A tool for applying changes to a commercetools project.
- *
+ * ct-migrations A tool for applying pre-determined changes to resources in a commercetools project.
  */
 
 import commander from 'commander';
 import fs from 'fs';
+import Commercetools from './commercetools';
+import Migration from './migration';
 
 commander.version('0.1.0', '-v, --version')
   .usage('[options] <migrationsDirectory>')
@@ -16,6 +17,7 @@ commander.version('0.1.0', '-v, --version')
   .option('-p, --projectKey [projectKey]', 'Project Key', process.env.PROJECT_KEY)
   .option('-a, --authUrl [authUrl]', 'Auth URL', process.env.AUTH_URL || 'https://auth.commercetools.co')
   .option('-i, --apiUrl [apiUrl]', 'API URL', process.env.API_URL || 'https://api.commercetools.co')
+  .option('-t, --concurrency [concurrency]', 'Concurrency', 10)
   .option('-d, --dryRun', 'Dry Run', false);
 
 commander.on('--help', () => {
@@ -58,11 +60,32 @@ if (!valid) {
   process.exit(1);
 }
 
-// verify ct client credentials
+// setup ct client
+const commercetools = Commercetools({
+  clientId: commander.clientId,
+  clientSecret: commander.clientSecret,
+  projectKey: commander.projectKey,
+  host: commander.apiUrl,
+  oauthHost: commander.authUrl,
+  concurrency: commander.concurrency,
+});
+
+const migration = new Migration({
+  commercetools,
+  migrationsDirectory: commander.args[0],
+});
 
 
-// get last applied migration
+const performMigraiton = async () => {
+  try {
+    await migration.getLastApplied();
+    await migration.applyNewMigrations();
+  } catch (e) {
+    console.error(`The ct-migrate tool ran into an error during migrations!\n${
+      `Last successfully applied migration: ${migration.getLastApplied()}``Error message: ${e}`}`);
+  }
+};
 
-// find migrations greater than the last applied one
+// perform the migrations
+performMigraiton();
 
-// apply them

@@ -1,0 +1,21 @@
+{
+  "action": "create",
+  "type": "productType",
+  "key": "sample-shirt",
+  "payload": {
+    "key": "sample-shirt",
+    "name": "Sample Shirt",
+    "description": "A Sample Shirt product type",
+    "attributes": [{
+      "type": {
+        "name": "text"
+      },
+      "name": "color",
+      "label": {"en": "Color"},
+      "isRequired": false,
+      "attributeConstraint": "None",
+      "inputHint": "SingleLine",
+      "isSearchable": false
+    }]
+  }
+}
