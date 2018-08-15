@@ -7,10 +7,11 @@ export const MIGRATION_LAST_APPLIED_KEY = 'ct-last-applied';
 export const MIGRATION_FILENAME_REGEX = /[0-9]{5}-.*.json/;
 
 export default class Migration {
-  constructor({ commercetools, migrationsDirectory }) {
+  constructor({ commercetools, migrationsDirectory, dryRun }) {
     this.ct = commercetools;
     this.dir = migrationsDirectory;
     this.lastApplied = { value: -1 };
+    this.dryRun = dryRun;
   }
 
   // Returns the last applied migration
