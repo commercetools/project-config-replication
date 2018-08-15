@@ -1,4 +1,4 @@
-ct-config-replication
+ct-project-config-replication
 ====
 
 This tool provides a scriptable interface to applying changes between commercetools projects.
