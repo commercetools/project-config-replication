@@ -1,4 +1,4 @@
-ct-apply-migration
+ct-config-replication
 ====
 
 This tool provides a scriptable interface to applying changes between commercetools projects.
