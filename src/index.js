@@ -73,6 +73,7 @@ const commercetools = Commercetools({
 const migration = new Migration({
   commercetools,
   migrationsDirectory: commander.args[0],
+  dryRun: commander.dryRun,
 });
 
 

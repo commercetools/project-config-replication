@@ -45,14 +45,18 @@ export default class Migration {
         return;
       }
       // migrate file if it is newer than lastApplied
-      if (parseInt(this.lastApplied.value) < parseInt(migrationFile, 10)) {
-        console.info(`Applying migration ${migrationFile}`);
-        // eslint-disable-next-line no-await-in-loop
-        await this.applyMigration(migrationFile);
-        console.info(`Migration ${migrationFile} applied successfully`);
-        // eslint-disable-next-line no-await-in-loop
-        await this.setLastApplied(migrationFile);
-        console.debug(`Set last applied to ${migrationFile}`);
+      if (parseInt(this.lastApplied.value, 10) < parseInt(migrationFile, 10)) {
+        if (this.dryRun) {
+          console.info(`Skipping file ${migrationFile} since we're running in dry run mode.`);
+        } else {
+          console.info(`Applying migration ${migrationFile}`);
+          // eslint-disable-next-line no-await-in-loop
+          await this.applyMigration(migrationFile);
+          console.info(`Migration ${migrationFile} applied successfully`);
+          // eslint-disable-next-line no-await-in-loop
+          await this.setLastApplied(migrationFile);
+          console.debug(`Set last applied to ${migrationFile}`);
+        }
       } else {
         console.info(`Skipping file ${migrationFile} as we've already applied it.`);
       }
@@ -101,21 +105,21 @@ export default class Migration {
       console.info(`Creating resource ${migration.type}`);
       try {
         await this.applyCreation(migration);
-      } catch(e) {
-        console.error(e)
-        throw e
+      } catch (e) {
+        console.error(e);
+        throw e;
       }
       console.info(`Created resource ${migration.type}/${migration.key}`);
     } else {
-      console.debug(`Getting current version of ${migration.type}/${migration.key}`)
+      console.debug(`Getting current version of ${migration.type}/${migration.key}`);
       const uri = this.ct.getRequestBuilder()[migration.type].byKey(migration.key).build();
-      console.debug(uri)
+      console.debug(uri);
       const getReq = {
         uri,
         method: 'GET',
       };
       const currentVersion = await this.ct.client.execute(getReq).then(res => res.body);
-      console.debug(currentVersion)
+      console.debug(currentVersion);
       // if we're deleting a resource
       if (migration.action.toLowerCase() === 'delete') {
         console.info(`Deleting resource ${migration.type}/${migration.key}`);
