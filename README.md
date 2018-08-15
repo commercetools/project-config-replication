@@ -4,6 +4,10 @@ ct-apply-migration
 This tool is provided to provide a scriptable interface to applying changes between commercetools projects.
 Given a directory of files each with a change (referred to as a migration), this tool will apply them to the configured project.
 
+Warning
+====
+This project is in its infancy and should not be considered production ready!
+
 
 Installation
 ----
@@ -17,7 +21,31 @@ A migration is a JSON file with a few fields defined.  All migrations should hav
 
 Configuration
 ---
-There are several optional flags to configure this program, alternatively you may use environment variables.  See the output of `node dist/index.js --help` for more information.
+There are several optional flags to configure this program, alternatively you may use environment variables.  See the output of `node dist/index.js --help` below for more information.
+
+```
+  Usage: index [options] <migrationsDirectory>
+
+  Options:
+
+    -v, --version                      output the version number
+    -c, --clientId [clientId]          Client ID
+    -s, --clientSecret [clientSecret]  Client Secret
+    -p, --projectKey [projectKey]      Project Key
+    -a, --authUrl [authUrl]            Auth URL (default: https://auth.commercetools.co)
+    -i, --apiUrl [apiUrl]              API URL (default: https://api.commercetools.co)
+    -t, --concurrency [concurrency]    Concurrency (default: 10)
+    -d, --dryRun                       Dry Run
+    -h, --help                         output usage information
+
+  Environment Variables:
+
+    CLIENT_ID
+    CLIENT_SECRET
+    PROJECT_KEY
+    AUTH_URL
+    API_URL
+```
 
 Running
 ---
