@@ -82,7 +82,7 @@ const performMigraiton = async () => {
     await migration.applyNewMigrations();
   } catch (e) {
     console.error(`The ct-migrate tool ran into an error during migrations!\n${
-      `Last successfully applied migration: ${migration.getLastApplied()}``Error message: ${e}`}`);
+      `Last successfully applied migration: ${migration.lastApplied.value}\nError message: ${JSON.stringify(e)}`}`);
   }
 };
 

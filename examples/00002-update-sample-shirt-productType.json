@@ -1,6 +1,6 @@
 {
   "action": "update",
-  "type": "productType",
+  "type": "productTypes",
   "key": "sample-shirt",
   "actions": [{
     "action": "changeName",

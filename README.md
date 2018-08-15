@@ -25,4 +25,6 @@ Run the program via `node dist/index.js [options] <pathToMigrationDirectory>`
 
 More Info
 ---
-This script will create a custom object "ct-migrations/ct-last-applied" in your commerctools project to keep track of the last applied migration.  This script relies on this custom object, alter it at your own risk.
+
+* This script will create a custom object "ct-migrations/ct-last-applied" in your commerctools project to keep track of the last applied migration.  This script relies on this custom object, alter it at your own risk.
+* In the future this might be available to install via npm, to ease integration into a CD pipeline.

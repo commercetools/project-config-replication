@@ -1,5 +1,5 @@
 {
   "action": "delete",
-  "type": "productType",
-  "key": "sample-shirt",
+  "type": "productTypes",
+  "key": "sample-shirt"
 }

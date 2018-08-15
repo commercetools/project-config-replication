@@ -1,6 +1,6 @@
 {
   "action": "create",
-  "type": "productType",
+  "type": "productTypes",
   "key": "sample-shirt",
   "payload": {
     "key": "sample-shirt",
@@ -10,8 +10,8 @@
       "type": {
         "name": "text"
       },
-      "name": "color",
-      "label": {"en": "Color"},
+      "name": "material",
+      "label": {"en": "Material"},
       "isRequired": false,
       "attributeConstraint": "None",
       "inputHint": "SingleLine",
