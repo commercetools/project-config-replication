@@ -1,7 +1,7 @@
 ct-apply-migration
 ====
 
-This tool is provided to provide a scriptable interface to applying changes between commercetools projects.
+This tool provides a scriptable interface to applying changes between commercetools projects.
 Given a directory of files each with a change (referred to as a migration), this tool will apply them to the configured project.
 
 Warning
