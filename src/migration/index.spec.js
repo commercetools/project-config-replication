@@ -2,6 +2,12 @@ import nock from 'nock';
 import Migration, { MIGRATION_CONTAINER, MIGRATION_LAST_APPLIED_KEY } from './index';
 import Commercetools from '../commercetools';
 
+const logger = {
+  debug: () => {},
+  info: () => {},
+  warn: () => {},
+  error: () => {},
+};
 
 describe('Migration', () => {
   const clientId = 'client1';
@@ -31,7 +37,7 @@ describe('Migration', () => {
   });
 
   beforeEach(() => {
-    migration = new Migration({ commercetools, migrationsDirectory, dryRun });
+    migration = new Migration({ commercetools, migrationsDirectory, dryRun, logger });
   });
 
   describe('getLastApplied', () => {
@@ -91,6 +97,10 @@ describe('Migration', () => {
   });
 
   describe('applyNewMigrations', () => {
+
+  });
+
+  describe('applyMigration', () => {
 
   });
 });

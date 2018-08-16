@@ -7,16 +7,19 @@ export const MIGRATION_LAST_APPLIED_KEY = 'ct-last-applied';
 export const MIGRATION_FILENAME_REGEX = /[0-9]{5}-.*.json/;
 
 export default class Migration {
-  constructor({ commercetools, migrationsDirectory, dryRun }) {
+  constructor({
+    commercetools, migrationsDirectory, dryRun, logger,
+  }) {
     this.ct = commercetools;
     this.dir = migrationsDirectory;
     this.lastApplied = { value: -1 };
     this.dryRun = dryRun;
+    this.logger = logger;
   }
 
   // Returns the last applied migration
   async getLastApplied() {
-    console.debug('Fetching last applied migration.');
+    this.logger.debug('Fetching last applied migration.');
     const key = MIGRATION_LAST_APPLIED_KEY;
     const lastApplied = await this.ct.client
       .execute({
@@ -36,31 +39,31 @@ export default class Migration {
 
   // attempts to apply any new migrations
   async applyNewMigrations() {
-    console.info(`Scanning ${this.dir} for migrations to apply...`);
+    this.logger.info(`Scanning ${this.dir} for migrations to apply...`);
     // read migration filenames from dir
     const dirListing = fs.readdirSync(this.dir).sort();
     for (let i = 0; i < dirListing.length; i += 1) {
       const migrationFile = dirListing[i];
       // if filename does not match our regex
       if (!migrationFile.match(MIGRATION_FILENAME_REGEX)) {
-        console.info(`Skipping file ${migrationFile} as it does not match our migration file name rules.`);
+        this.logger.info(`Skipping file ${migrationFile} as it does not match our migration file name rules.`);
         return;
       }
       // migrate file if it is newer than lastApplied
       if (parseInt(this.lastApplied.value, 10) < parseInt(migrationFile, 10)) {
         if (this.dryRun) {
-          console.info(`Skipping file ${migrationFile} since we're running in dry run mode.`);
+          this.logger.info(`Skipping file ${migrationFile} since we're running in dry run mode.`);
         } else {
-          console.info(`Applying migration ${migrationFile}`);
+          this.logger.info(`Applying migration ${migrationFile}`);
           // eslint-disable-next-line no-await-in-loop
           await this.applyMigration(migrationFile);
-          console.info(`Migration ${migrationFile} applied successfully`);
+          this.logger.info(`Migration ${migrationFile} applied successfully`);
           // eslint-disable-next-line no-await-in-loop
           await this.setLastApplied(migrationFile);
-          console.debug(`Set last applied to ${migrationFile}`);
+          this.logger.debug(`Set last applied to ${migrationFile}`);
         }
       } else {
-        console.info(`Skipping file ${migrationFile} as we've already applied it.`);
+        this.logger.info(`Skipping file ${migrationFile} as we've already applied it.`);
       }
     }
   }
@@ -104,27 +107,27 @@ export default class Migration {
     }
     // if we're creating a resource
     if (migration.action.toLowerCase() === 'create') {
-      console.info(`Creating resource ${migration.type}`);
+      this.logger.info(`Creating resource ${migration.type}`);
       try {
         await this.applyCreation(migration);
       } catch (e) {
-        console.error(e);
+        this.logger.error(e);
         throw e;
       }
-      console.info(`Created resource ${migration.type}/${migration.key}`);
+      this.logger.info(`Created resource ${migration.type}/${migration.key}`);
     } else {
-      console.debug(`Getting current version of ${migration.type}/${migration.key}`);
+      this.logger.debug(`Getting current version of ${migration.type}/${migration.key}`);
       const uri = this.ct.getRequestBuilder()[migration.type].byKey(migration.key).build();
-      console.debug(uri);
+      this.logger.debug(uri);
       const getReq = {
         uri,
         method: 'GET',
       };
       const currentVersion = await this.ct.client.execute(getReq).then(res => res.body);
-      console.debug(currentVersion);
+      this.logger.debug(currentVersion);
       // if we're deleting a resource
       if (migration.action.toLowerCase() === 'delete') {
-        console.info(`Deleting resource ${migration.type}/${migration.key}`);
+        this.logger.info(`Deleting resource ${migration.type}/${migration.key}`);
         const request = {
           uri: `${uri}?version=${currentVersion.version}`,
           method: 'DELETE',
@@ -132,7 +135,7 @@ export default class Migration {
         return this.ct.client.execute(request);
         // if we're updating a resource
       } else if (migration.action.toLowerCase() === 'update') {
-        console.info(`Updating resource ${migration.type}/${migration.key}`);
+        this.logger.info(`Updating resource ${migration.type}/${migration.key}`);
         const request = {
           uri,
           method: 'POST',

@@ -8,6 +8,7 @@ import commander from 'commander';
 import fs from 'fs';
 import Commercetools from './commercetools';
 import Migration from './migration';
+import Logger from './logger';
 
 commander.version('0.1.0', '-v, --version')
   .usage('[options] <migrationsDirectory>')
@@ -21,38 +22,43 @@ commander.version('0.1.0', '-v, --version')
   .option('-d, --dryRun', 'Dry Run', false);
 
 commander.on('--help', () => {
-  console.log('  Environment Variables:');
-  console.log('');
-  console.log('    CLIENT_ID');
-  console.log('    CLIENT_SECRET');
-  console.log('    PROJECT_KEY');
-  console.log('    AUTH_URL');
-  console.log('    API_URL');
-  console.log('');
+  console.info('  Environment Variables:');
+  console.info('');
+  console.info('    CLIENT_ID');
+  console.info('    CLIENT_SECRET');
+  console.info('    PROJECT_KEY');
+  console.info('    AUTH_URL');
+  console.info('    API_URL');
+  console.info('');
 });
 
 commander.parse(process.argv);
 
+const logger = Logger({
+  level: commander.logLevel,
+  isDisabled: false,
+});
+
 // ensure we have a migrations dir and all settings are set.
 let valid = true;
 if (!commander.clientId) {
-  console.log('No client ID specified.  Please set CLIENT_ID or use the -c/--clientId flag to specify one.');
+  logger.warn('No client ID specified.  Please set CLIENT_ID or use the -c/--clientId flag to specify one.');
   valid = false;
 }
 if (!commander.clientSecret) {
-  console.log('No client secret specified.  Please set CLIENT_SECRET or use the -s/--clientSecret flag to specify one.');
+  logger.warn('No client secret specified.  Please set CLIENT_SECRET or use the -s/--clientSecret flag to specify one.');
   valid = false;
 }
 if (!commander.projectKey) {
-  console.log('No project key specified.  Please set PROJECT_KEY or use the -p/--projectKey flag to specify one.');
+  logger.warn('No project key specified.  Please set PROJECT_KEY or use the -p/--projectKey flag to specify one.');
   valid = false;
 }
 if (!commander.args[0]) {
-  console.log('No migrations directory specified.  Usage: ct-migrate [options] <migrationsDirectory>');
+  logger.warn('No migrations directory specified.  Usage: ct-migrate [options] <migrationsDirectory>');
   valid = false;
 }
 if (!fs.existsSync(commander.args[0]) || !fs.lstatSync(commander.args[0]).isDirectory()) {
-  console.log(`Migrations directory "${commander.args[0]}" is not a directory.  Usage: ct-migrate [options] <migrationsDirectory>`);
+  logger.warn(`Migrations directory "${commander.args[0]}" is not a directory.  Usage: ct-migrate [options] <migrationsDirectory>`);
   valid = false;
 }
 // exit if missing a parameter
@@ -74,6 +80,7 @@ const migration = new Migration({
   commercetools,
   migrationsDirectory: commander.args[0],
   dryRun: commander.dryRun,
+  logger,
 });
 
 
@@ -82,7 +89,7 @@ const performMigraiton = async () => {
     await migration.getLastApplied();
     await migration.applyNewMigrations();
   } catch (e) {
-    console.error('The ct-migrate tool ran into an error during migrations!\n' +
+    logger.error('The ct-migrate tool ran into an error during migrations!\n' +
       `Last successfully applied migration: ${migration.lastApplied.value}\nError message: ${JSON.stringify(e)}`);
   }
 };
