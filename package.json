@@ -67,7 +67,7 @@
     ],
     "coverageDirectory": "../coverage",
     "collectCoverageFrom": [
-      "services/**/*.js"
+      "**/*.js"
     ],
     "testEnvironment": "node"
   },
