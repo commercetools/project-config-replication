@@ -37,7 +37,9 @@ describe('Migration', () => {
   });
 
   beforeEach(() => {
-    migration = new Migration({ commercetools, migrationsDirectory, dryRun, logger });
+    migration = new Migration({
+      commercetools, migrationsDirectory, dryRun, logger,
+    });
   });
 
   describe('getLastApplied', () => {
