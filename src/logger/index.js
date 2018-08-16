@@ -26,6 +26,7 @@ export default ({ level, isDisabled }) => {
     }));
 
     logger = winston.createLogger({
+      format: winston.format.simple(),
       transports,
       exceptionHandlers,
       exitOnError: false,
