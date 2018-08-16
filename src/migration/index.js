@@ -31,6 +31,7 @@ export default class Migration {
         throw e;
       });
     this.lastApplied = lastApplied || { value: -1 };
+    return this.lastApplied;
   }
 
   // attempts to apply any new migrations
