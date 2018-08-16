@@ -51,7 +51,15 @@ describe('Migration', () => {
   });
 
   describe('setLastApplied', () => {
-
+    const lastApplied = { value: '00003-some-migration.json' };
+    beforeEach(() => {
+      nock(host)
+        .persist()
+        .post(`/${projectKey}/custom-objects/${MIGRATION_CONTAINER}/${MIGRATION_LAST_APPLIED_KEY}`)
+        .reply(200, lastApplied);
+    });
+    it('should return an object with a "value" property', () =>
+      expect(migration.getLastApplied()).resolves.toHaveProperty('value'));
   });
 
   describe('applyCreation', () => {
