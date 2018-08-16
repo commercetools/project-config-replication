@@ -154,6 +154,6 @@ export default class Migration {
       method: 'POST',
       body: JSON.stringify(migration.payload),
     };
-    return this.ct.client.execute(req);
+    return this.ct.client.execute(req).then(res => res.body);
   }
 }

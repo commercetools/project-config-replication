@@ -46,10 +46,6 @@ describe('Migration', () => {
       expect(migration.getLastApplied()).resolves.toHaveProperty('value'));
   });
 
-  describe('applyNewMigrations', () => {
-
-  });
-
   describe('setLastApplied', () => {
     const lastApplied = { value: '00003-some-migration.json' };
     beforeEach(() => {
@@ -63,6 +59,38 @@ describe('Migration', () => {
   });
 
   describe('applyCreation', () => {
+    const sampleMigration = {
+      action: 'create',
+      type: 'productTypes',
+      key: 'sample-shirt',
+      payload: {
+        key: 'sample-shirt',
+        name: 'Sample Shirt',
+        description: 'A Sample Shirt product type',
+        attributes: [{
+          type: {
+            name: 'text',
+          },
+          name: 'material',
+          label: { en: 'Material' },
+          isRequired: false,
+          attributeConstraint: 'None',
+          inputHint: 'SingleLine',
+          isSearchable: false,
+        }],
+      },
+    };
+    beforeEach(() => {
+      nock(host)
+        .persist()
+        .post(`/${projectKey}/product-types`)
+        .reply(200, sampleMigration.payload);
+    });
+    it('should return the created resource', () =>
+      expect(migration.applyCreation(sampleMigration)).resolves.toEqual(sampleMigration.payload));
+  });
+
+  describe('applyNewMigrations', () => {
 
   });
 });
