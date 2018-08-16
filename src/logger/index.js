@@ -6,7 +6,7 @@ export default ({ level, isDisabled }) => {
   let logger;
 
   if (isDisabled) {
-    logger = new winston.Logger();
+    logger = winston.createLogger()
     console.log('\u001b[32minfo\u001b[39m: [logger] is disabled by configuration');
   } else {
     transports.push(new winston.transports.Console({
@@ -25,7 +25,7 @@ export default ({ level, isDisabled }) => {
       prettyPrint: true,
     }));
 
-    logger = new winston.Logger({
+    logger = winston.createLogger({
       transports,
       exceptionHandlers,
       exitOnError: false,
